@@ -1,19 +1,34 @@
 <template>
-  <div class="tab-container">
-    <div class="string" v-for="(item, stringIndex) in stringCount" :key="stringIndex">
-        <div class="string-tuning">
-            {{stringTuning[0]}}
+    <div>
+        <div class="tab-container">
+            <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
+                <div class="string-tuning">
+                    {{stringTuning[stringIndex]}}
+                </div>
+                <!-- <div class="string-tuning">
+                    -
+                </div> -->
+                <div class="fret" v-for="(item,fretIndex) in fretCount" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex + 1, stringIndex);">
+                </div>
+            </div>
         </div>
-        <div class="fret" v-for="(item,fretIndex) in fretCount" :key="fretIndex">
-            <div>
-                String ({{stringIndex}} - Fret - {{fretIndex}}
+        <span>Active bar is {{activeBar}}</span>
+        <div class="notation-container">
+            <div class="notation-string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
+                <div class="notation-string-tuning"> 
+                    <pre class="notation-text">{{stringTuning[stringIndex]}}|</pre>
+                </div>
+                <div class="notation-bar" v-on:click="setBarActive(barIndex);" v-on:mouseover="barMouseOver(barIndex);"  v-on:mouseleave="barMouseLeave();" v-for="(item,barIndex) in barCount" :key="barIndex" v-bind:data-string="stringIndex + 1" v-bind:data-bar="barIndex + 1">
+                    <pre class="notation-text" v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '', activeBar === barIndex ? 'active-bar' : '']">{{barText[barIndex][stringIndex]}}</pre>
+                </div>
             </div>
         </div>
     </div>
-  </div>
 </template>
 
 <script>
+/* eslint-disable */
+import Vue from 'vue'
 export default {
   name: 'Tabscribe',
   props: {
@@ -21,18 +36,48 @@ export default {
   },
   data() {
       return {
-          stringCount: 7,
+          stringCount: 4,
           fretCount: 24,
-          stringTuning: []
+          stringTuning: [],
+          barCount: 1,
+          hoverBar: null,
+          activeBar: 0,
+          barText: []
       }
   },
   created: function () {
-      for(var i = 0; i < this.stringCount; i++) {
-          this.stringTuning[i] = 'E';
+      // Set default strings and tunings
+      if (this.stringCount === 7) {
+        this.stringTuning = ["E", "B", "G", "D", "A", "E", "B"];
+      } else if (this.stringCount == 6) {
+        this.stringTuning = ["E", "A", "D", "G", "B", "E"];
+      } else if (this.stringCount === 4) {
+          this.stringTuning = ["G", "D", "E", "A"];
       }
+
+      // default some text into the bars
+      this.barText[0] = ['-','-','-','-'];
+
   },
   methods: {
-      
+      fretClick: function(fretIndex, stringIndex) {
+          var currentBarText = this.barText[this.activeBar];
+          currentBarText[stringIndex] = fretIndex.toString();
+          
+          Vue.set(this.barText, this.activeBar, currentBarText);
+      },
+      barMouseOver: function(barIndex) {
+          this.hoverBar = barIndex;
+      },
+      barMouseLeave: function() {
+          this.hoverBar = null;
+      },
+      setBarActive: function(index) {
+          this.activeBar = index;
+      },
+      getBarText: function(barIndex, stringIndex) {
+          return this.barText[barIndex][stringIndex];
+      }
   }
 }
 </script>
@@ -57,6 +102,35 @@ export default {
         border-right: 2px solid #4E5555;
         border-left: 2px solid #4E5555;
         width: 3rem;
+    }
+
+    .fret:hover {
+        background-color: red;
+    }
+
+
+    .notation-container {
+        display: table;
+    }
+
+    .notation-string {
+        display: table-row;
+    }
+
+    .notation-bar {
+        display: table-cell;
+    }
+
+    .notation-text {
+        margin: 0 !important;
+    }
+
+    .hovered-bar {
+        color: lime;
+    }
+
+    .active-bar {
+        color: lightsalmon;
     }
 
 </style>
