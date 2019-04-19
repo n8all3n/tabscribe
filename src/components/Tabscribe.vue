@@ -14,6 +14,7 @@
         </div>
         <span>Active bar is {{activeBar}}</span>
         <button type="button" v-on:click="addNewBar();">Add Bar</button>
+        <button type="button" v-on:click="deleteBar();">Delete Bar</button>
         <div class="notation-container">
             <div class="notation-string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                 <div class="notation-string-tuning"> 
@@ -62,11 +63,11 @@ export default {
 
   },
   methods: {
+      /**
+       * Checks if the current fret and string are selected.  If they are
+       * return a class that indicates the fret is active
+       */
       getFretNoteClass: function(fretIndex, stringIndex) {
-        if (fretIndex === 0) {
-            var asdf = '';
-        }
-
         var currBar = this.barText[this.activeBar];
         var theString = currBar[stringIndex];
 
@@ -77,18 +78,35 @@ export default {
         return '';
       },
       fretClick: function(fretIndex, stringIndex) {
+        // find the current bar
         var currentBarText = this.barText[this.activeBar];
 
+        // clicking on an item that is already selected...clear the item
         if (currentBarText[stringIndex] === fretIndex.toString()) {
             currentBarText[stringIndex] = '-';
         } else {
+            // clicked on a new fret set the fret
             currentBarText[stringIndex] = fretIndex.toString(); 
         }
 
         Vue.set(this.barText, this.activeBar, currentBarText);
       },
+      deleteBar: function () {
+        // don't delete if there's just one bar
+        if (this.activeBar === 0) {
+            return;
+        }
+          
+        // get whatever the next bar would be after this one is deleted
+        var nextActiveBar = this.activeBar - 1;
+        this.$delete(this.barText, this.activeBar);
+
+        // update the active bar now that a bar is deleted
+        this.activeBar = nextActiveBar;
+      },
       addNewBar: function() {
         var newBar = [];
+        // add an array with the number of strings with dashes
         for(var i = 0; i < this.stringCount; i++) {
             newBar.push('-');
         }
@@ -103,9 +121,6 @@ export default {
       },
       setBarActive: function(index) {
         this.activeBar = index;
-      },
-      getBarText: function(barIndex, stringIndex) {
-        return this.barText[barIndex][stringIndex];
       }
   }
 }
@@ -159,7 +174,7 @@ export default {
     }
 
     .hovered-bar {
-        color: lime;
+        color: red;
     }
 
     .active-bar {
