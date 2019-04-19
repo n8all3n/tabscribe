@@ -55,7 +55,7 @@ export default {
       } else if (this.stringCount == 6) {
         this.stringTuning = ["E", "A", "D", "G", "B", "E"];
       } else if (this.stringCount === 4) {
-          this.stringTuning = ["G", "D", "E", "A"];
+          this.stringTuning = ["G", "D", "A", "E"];
       }
 
       // default some text into the bars
