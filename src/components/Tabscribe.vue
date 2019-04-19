@@ -8,21 +8,24 @@
                 <!-- <div class="string-tuning">
                     -
                 </div> -->
-                <div class="fret" v-for="(item,fretIndex) in fretCount" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex + 1, stringIndex);">
+                <div class="fret" v-bind:class="getFretNoteClass(fretIndex, stringIndex)" v-for="(item,fretIndex) in fretCount" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex + 1, stringIndex);">
                 </div>
             </div>
         </div>
         <span>Active bar is {{activeBar}}</span>
+        <button type="button" v-on:click="addNewBar();">Add Bar</button>
         <div class="notation-container">
             <div class="notation-string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                 <div class="notation-string-tuning"> 
                     <pre class="notation-text">{{stringTuning[stringIndex]}}|</pre>
                 </div>
-                <div class="notation-bar" v-on:click="setBarActive(barIndex);" v-on:mouseover="barMouseOver(barIndex);"  v-on:mouseleave="barMouseLeave();" v-for="(item,barIndex) in barCount" :key="barIndex" v-bind:data-string="stringIndex + 1" v-bind:data-bar="barIndex + 1">
+                <div class="notation-bar" v-on:click="setBarActive(barIndex);" v-on:mouseover="barMouseOver(barIndex);"  v-on:mouseleave="barMouseLeave();" v-for="(item,barIndex) in barText.length" :key="barIndex" v-bind:data-string="stringIndex + 1" v-bind:data-bar="barIndex + 1">
                     <pre class="notation-text" v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '', activeBar === barIndex ? 'active-bar' : '']">{{barText[barIndex][stringIndex]}}</pre>
                 </div>
             </div>
         </div>
+
+        
     </div>
 </template>
 
@@ -39,7 +42,6 @@ export default {
           stringCount: 4,
           fretCount: 24,
           stringTuning: [],
-          barCount: 1,
           hoverBar: null,
           activeBar: 0,
           barText: []
@@ -60,23 +62,50 @@ export default {
 
   },
   methods: {
+      getFretNoteClass: function(fretIndex, stringIndex) {
+        if (fretIndex === 0) {
+            var asdf = '';
+        }
+
+        var currBar = this.barText[this.activeBar];
+        var theString = currBar[stringIndex];
+
+        if (parseInt(theString, 10) - 1 === fretIndex) {
+            return 'fret-active';
+        }
+
+        return '';
+      },
       fretClick: function(fretIndex, stringIndex) {
-          var currentBarText = this.barText[this.activeBar];
-          currentBarText[stringIndex] = fretIndex.toString();
-          
-          Vue.set(this.barText, this.activeBar, currentBarText);
+        var currentBarText = this.barText[this.activeBar];
+
+        if (currentBarText[stringIndex] === fretIndex.toString()) {
+            currentBarText[stringIndex] = '-';
+        } else {
+            currentBarText[stringIndex] = fretIndex.toString(); 
+        }
+
+        Vue.set(this.barText, this.activeBar, currentBarText);
+      },
+      addNewBar: function() {
+        var newBar = [];
+        for(var i = 0; i < this.stringCount; i++) {
+            newBar.push('-');
+        }
+
+        Vue.set(this.barText, this.barText.length, newBar);
       },
       barMouseOver: function(barIndex) {
-          this.hoverBar = barIndex;
+        this.hoverBar = barIndex;
       },
       barMouseLeave: function() {
-          this.hoverBar = null;
+        this.hoverBar = null;
       },
       setBarActive: function(index) {
-          this.activeBar = index;
+        this.activeBar = index;
       },
       getBarText: function(barIndex, stringIndex) {
-          return this.barText[barIndex][stringIndex];
+        return this.barText[barIndex][stringIndex];
       }
   }
 }
@@ -84,6 +113,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .fret-active {
+        background:lightseagreen;
+    }
+
     .tab-container {
         display: table;
         width: 100%;
