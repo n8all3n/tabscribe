@@ -5,9 +5,24 @@
                 <div class="string-tuning">
                     {{stringTuning[stringIndex]}}
                 </div>
-                <!-- <div class="string-tuning">
-                    -
-                </div> -->
+                <div class="adv-container">
+                   <div class="btn-group">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{getSpecialNotationVal(stringIndex)}}
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('h', stringIndex);">h</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('p', stringIndex);">p</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('b', stringIndex);">b</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('r', stringIndex);">r</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('/', stringIndex);">/</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('\\', stringIndex);">\</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('v', stringIndex);">v</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('t', stringIndex);">t</a>
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('x', stringIndex);">x</a>                  
+                        </div>
+                    </div>
+                </div>
                 <div class="fret" v-bind:class="getFretNoteClass(fretIndex, stringIndex)" v-for="(item,fretIndex) in fretCount" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex + 1, stringIndex);">
                 </div>
             </div>
@@ -24,9 +39,7 @@
                     <pre class="notation-text" v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '', activeBar === barIndex ? 'active-bar' : '']">{{barText[barIndex][stringIndex]}}</pre>
                 </div>
             </div>
-        </div>
-
-        
+        </div> 
     </div>
 </template>
 
@@ -40,7 +53,7 @@ export default {
   },
   data() {
       return {
-          stringCount: 4,
+          stringCount: 7,
           fretCount: 24,
           stringTuning: [],
           hoverBar: null,
@@ -63,6 +76,26 @@ export default {
 
   },
   methods: {
+    setSpecialNotationValue(notation, stringIndex) {
+        // find the current bar
+        var currentBarText = this.barText[this.activeBar];
+
+        currentBarText[stringIndex] = notation;
+        Vue.set(this.barText, this.activeBar, currentBarText);
+
+    },
+    getSpecialNotationVal(stringIndex) {
+        var currBar = this.barText[this.activeBar];
+        var theString = currBar[stringIndex];
+
+        var parsedVal = parseInt(theString, 10);
+        if (isNaN(parsedVal) && theString !== '-') {
+            return theString;
+        }
+
+        return '';
+    },
+
       /**
        * Checks if the current fret and string are selected.  If they are
        * return a class that indicates the fret is active
@@ -128,6 +161,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+    .adv-container {
+        padding: .2rem;
+    }
     .fret-active {
         background:lightseagreen;
     }
