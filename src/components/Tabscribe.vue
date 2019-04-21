@@ -30,6 +30,8 @@
         </div>
         <span>Active bar is {{activeBar}}</span>
         <button type="button" v-on:click="addNewBar();">Add Bar</button>
+        <button type="button" v-on:click="backOneBar();">Back a Bar</button>
+        <button type="button" v-on:click="nextBar();">Next Bar</button>
         <button type="button" v-on:click="deleteBar();">Delete Bar</button>
         <div class="notation-container">
             <div class="notation-string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
@@ -127,12 +129,18 @@ export default {
       },
       deleteBar: function () {
         // don't delete if there's just one bar
-        if (this.activeBar === 0) {
+        if (this.barText.length === 1) {
             return;
         }
           
         // get whatever the next bar would be after this one is deleted
-        var nextActiveBar = this.activeBar - 1;
+        var nextActiveBar;
+        if (this.activeBar === 0) {
+            nextActiveBar = 0;
+        } else {
+            nextActiveBar = this.activeBar - 1;
+        }
+        
         this.$delete(this.barText, this.activeBar);
 
         // update the active bar now that a bar is deleted
@@ -146,6 +154,21 @@ export default {
         }
 
         Vue.set(this.barText, this.barText.length, newBar);
+      },
+      nextBar: function() {
+        if (this.activeBar + 1 >= this.barText.length) {
+            return;
+        }
+
+        this.activeBar +=1;
+          
+      },
+      backOneBar: function() {
+        if (this.activeBar === 0) {
+            return;
+        }
+
+        this.activeBar -=1;     
       },
       barMouseOver: function(barIndex) {
         this.hoverBar = barIndex;
@@ -215,7 +238,8 @@ export default {
     }
 
     .active-bar {
-        color: lightsalmon;
+        background-color: black;
+        color: white;
     }
 
 </style>
