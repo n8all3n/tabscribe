@@ -11,6 +11,7 @@
                             {{getSpecialNotationVal(stringIndex)}}
                         </button>
                         <div class="dropdown-menu">
+                            <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('-', stringIndex);">-</a>
                             <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('h', stringIndex);">h</a>
                             <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('p', stringIndex);">p</a>
                             <a class="dropdown-item" href="javascript:void(0);" @click="setSpecialNotationValue('b', stringIndex);">b</a>
@@ -53,7 +54,7 @@ export default {
   },
   data() {
       return {
-          stringCount: 7,
+          stringCount: 4,
           fretCount: 24,
           stringTuning: [],
           hoverBar: null,
