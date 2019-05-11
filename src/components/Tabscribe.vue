@@ -8,7 +8,7 @@
                     </div>
                     <div class="adv-container">
                     <div class="btn-group">
-                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{getSpecialNotationVal(stringIndex)}}
                             </button>
                             <div class="dropdown-menu">
@@ -30,12 +30,12 @@
                 </div>
             </div>
             <div class="btn-group control-buttons">
-                <button type="button" class="btn btn-dark" v-on:click="addNewLine();">Add Line</button>
-                <button type="button" class="btn btn-dark" v-on:click="deleteLine();">Delete Line</button>
-                <button type="button" class="btn btn-dark" v-on:click="addNewBar();">Add Bar</button>
-                <button type="button" class="btn btn-dark" v-on:click="backOneBar();">Back a Bar</button>
-                <button type="button" class="btn btn-dark" v-on:click="nextBar();">Next Bar</button>
-                <button type="button" class="btn btn-dark" v-on:click="deleteBar();">Delete Bar</button>
+                <button type="button" class="btn btn-primary" v-on:click="addNewLine();">Add Line</button>
+                <button type="button" class="btn btn-primary" v-on:click="deleteLine();">Delete Line</button>
+                <button type="button" class="btn btn-primary" v-on:click="addNewBar();">Add Bar</button>
+                <button type="button" class="btn btn-primary" v-on:click="backOneBar();">Back a Bar</button>
+                <button type="button" class="btn btn-primary" v-on:click="nextBar();">Next Bar</button>
+                <button type="button" class="btn btn-primary" v-on:click="deleteBar();">Delete Bar</button>
             </div>
         </div>
          
@@ -263,7 +263,7 @@ export default {
         padding: .1em;
     }
     .fret-active {
-        background:lightseagreen;
+        background:#007BFF;
     }
 
     .tab-control-container {
