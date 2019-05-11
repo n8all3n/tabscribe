@@ -1,6 +1,6 @@
 <template>
     <div class="tabscribe-container">
-        <div class="sticky-top">
+        <div class="tab-control-container sticky-top">
             <div class="tab-container">
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="string-tuning">
@@ -29,13 +29,13 @@
                     </div>
                 </div>
             </div>
-            <div class="button-group">
-                <button type="button" v-on:click="addNewLine();">Add Line</button>
-                <button type="button" v-on:click="deleteLine();">Delete Line</button>
-                <button type="button" v-on:click="addNewBar();">Add Bar</button>
-                <button type="button" v-on:click="backOneBar();">Back a Bar</button>
-                <button type="button" v-on:click="nextBar();">Next Bar</button>
-                <button type="button" v-on:click="deleteBar();">Delete Bar</button>
+            <div class="btn-group control-buttons">
+                <button type="button" class="btn btn-dark" v-on:click="addNewLine();">Add Line</button>
+                <button type="button" class="btn btn-dark" v-on:click="deleteLine();">Delete Line</button>
+                <button type="button" class="btn btn-dark" v-on:click="addNewBar();">Add Bar</button>
+                <button type="button" class="btn btn-dark" v-on:click="backOneBar();">Back a Bar</button>
+                <button type="button" class="btn btn-dark" v-on:click="nextBar();">Next Bar</button>
+                <button type="button" class="btn btn-dark" v-on:click="deleteBar();">Delete Bar</button>
             </div>
         </div>
          
@@ -255,16 +255,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-    /* .button-group {
-        display: flex;
-        flex-direction: row;
-    } */
-
-    /* .tabscribe-container {
-        display: flex;
-        flex-direction: column;
-    } */
+    .control-buttons {
+        padding-top: 1em;
+    }
 
     .adv-container {
         padding: .1em;
@@ -273,13 +266,17 @@ export default {
         background:lightseagreen;
     }
 
+    .tab-control-container {
+        background-color: white;
+    }
+
     .tab-container {
         display: table;
         width: 100%;
         border-top: 2px solid #4E5555;
         border-bottom: 2px solid #4E5555;
         border-collapse: collapse;
-        background-color: white;
+        
     }
 
     .string {
