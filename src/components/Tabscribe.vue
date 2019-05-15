@@ -82,7 +82,7 @@
                         v-on:mouseover="barMouseOver(barIndex);" 
                         v-on:mouseleave="barMouseLeave();">
 
-                        <debug :item="lines[lineIndex][barIndex][stringIndex]"/>
+                        <!-- <debug :item="lines[lineIndex][barIndex][stringIndex]"/> -->
                         <span class="notation-text"
                             v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '']">
                             {{lines[lineIndex][barIndex][stringIndex]}}</span>
@@ -118,6 +118,25 @@ export default {
   },
   components: {
     debug
+  },
+  mounted: function () {
+      var vm = this;
+      document.onkeydown = function(event) {
+        switch (event.keyCode) {
+           case 37: // Left arrow
+                vm.backOneBar();
+              break;
+           case 38: // Up arrow
+                //vm.setBarActive(vm.lineIndex +=1, 0);
+              break;
+           case 39: // Right arrow
+                vm.nextBar();
+              break;
+           case 40: // Down Arrow
+                 //vm.setBarActive(vm.lineIndex +=1, 0);
+              break;
+        }
+    };
   },
   created: function () {
     // Set default strings and tunings
@@ -347,6 +366,13 @@ export default {
     .notation-text {
         margin: 0 !important;
     }
+
+    .notation-text, .text-notes {
+        font-family: Consolas,monospace;
+        font-size: 14px;
+        font-weight: 400;
+    }
+
 
     .hovered-bar {
         color: red;
