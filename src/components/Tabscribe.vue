@@ -38,8 +38,6 @@
                 <button type="button" class="btn btn-primary" v-on:click="deleteBar();">Delete Bar</button>
             </div>
         </div>
-         
-
         <div class="notation-groups">
             <div class="notation-container" v-for="(currentLine, lineIndex) in lines.length" v-bind:key="lineIndex">
                 <div>
@@ -78,14 +76,15 @@ export default {
   },
   data() {
       return {
-          stringCount: 4,
+          stringCount: 7,
           fretCount: 24,
           stringTuning: [],
           hoverBar: null,
           activeBar: 0,
           activeLine: 0,
           lines:[],
-          lineText: []
+          lineText: [],
+          defaultBarCount: 10
       }
   },
   components: {
@@ -96,23 +95,34 @@ export default {
     if (this.stringCount === 7) {
     this.stringTuning = ["E", "B", "G", "D", "A", "E", "B"];
     } else if (this.stringCount == 6) {
-    this.stringTuning = ["E", "A", "D", "G", "B", "E"];
+    this.stringTuning = ["E", "B", "G", "D", "A", "E"];
     } else if (this.stringCount === 4) {
         this.stringTuning = ["G", "D", "A", "E"];
     }
 
     this.lines[0] = [];
-    
-    this.lines[0].push(['-','-','-','-']);
+
+    for (var i = 0; i < this.defaultBarCount; i++) {
+        this.lines[0].push(this.createDefaultBar());
+    }
 
     this.lineText.push('');
   },
-  methods: {
+  methods: {    
+    createDefaultBar() {
+        var barArray = [];
+        for (var i = 0; i < this.stringCount; i++) {
+            barArray.push('-');
+        }
+
+        return barArray;
+    },
     addNewLine: function() {
-        var newBar = ['-','-','-','-'];
-        
+        var newBar = this.createDefaultBar();
         var newArray = [];
-        newArray[0] = newBar;
+        for (var i = 0; i < this.defaultBarCount; i++) {
+            newArray.push(this.createDefaultBar());
+        }
         
         var nextIndex = this.lines.length;
 
@@ -196,12 +206,7 @@ export default {
         this.activeBar = nextActiveBar;
       },
       addNewBar: function() {
-        var newBar = [];
-        // add an array with the number of strings with dashes
-        for(var i = 0; i < this.stringCount; i++) {
-            newBar.push('-');
-        }
-
+        var newBar = this.createDefaultBar();
         var nextish = this.lines[this.activeLine];
         nextish.push(newBar);
 
