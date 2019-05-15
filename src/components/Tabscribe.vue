@@ -2,6 +2,11 @@
     <div class="tabscribe-container">
         <div class="tab-control-container sticky-top">
             <div class="tab-container">
+                <div class="fret-number-container">
+                    <div class="fret-number" v-for="(item, x) in fretCount + 2" v-bind:key="x">
+                        <span v-if="x-1 > 0">{{x - 1}}</span>
+                    </div>
+                </div>
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="string-tuning">
                         <div class="btn-group">
@@ -297,6 +302,18 @@ export default {
     .string {
         display: table-row;
         border-bottom: 2px solid #4E5555;
+    }
+
+    .fret-number-container {
+        display: table-row;
+        border-bottom: 2px solid #4E5555;
+    }
+
+    .fret-number {
+        display: table-cell;
+        border-right: 2px solid #4E5555;
+        border-left: 2px solid #4E5555;
+        width: 3rem;
     }
 
     .fret, .string-tuning {
