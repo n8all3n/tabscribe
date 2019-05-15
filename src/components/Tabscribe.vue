@@ -42,11 +42,13 @@
 
         <div class="notation-groups">
             <div class="notation-container" v-for="(currentLine, lineIndex) in lines.length" v-bind:key="lineIndex">
+                <div>
+                    <input type="text" class="text-notes" v-model="lineText[lineIndex]" placeholder="Text describing the current line...">
+                </div>
                 <div class="notation-string" v-for="(string, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="notation-string-tuning"> 
                         <pre class="notation-text">{{stringTuning[stringIndex]}}|</pre>
                     </div>
-
                     <div class="notation-bar" v-bind:class="activeLine === lineIndex && activeBar === barIndex ? 'active-bar' : ''"
                         v-for="(item,barIndex) in lines[lineIndex].length" :key="barIndex"
                         v-on:click="setBarActive(lineIndex, barIndex);" 
@@ -83,7 +85,7 @@ export default {
           activeBar: 0,
           activeLine: 0,
           lines:[],
-          barText: []
+          lineText: []
       }
   },
   components: {
@@ -100,14 +102,10 @@ export default {
     }
 
     this.lines[0] = [];
+    
     this.lines[0].push(['-','-','-','-']);
 
-
-    //this.lines[0][0] = ['-','-','-','-'];
-
-    // default some text into the bars
-    this.barText[0] = ['-','-','-','-'];
-
+    this.lineText.push('');
   },
   methods: {
     addNewLine: function() {
@@ -119,16 +117,20 @@ export default {
         var nextIndex = this.lines.length;
 
         Vue.set(this.lines, nextIndex, newArray);
+
+        this.lineText.push('');
     },
     deleteLine: function() {
         if (this.lines.length > 1) {
+            
             this.$delete(this.lines, this.activeLine);
-
+            this.$delete(this.lineText, this.activeLine);
+            
             if (this.activeLine > 0) {
                 this.activeLine--;
             }
 
-            this.activeBar = 0;
+            this.activeBar = 0;      
         }
     },
     setSpecialNotationValue(notation, stringIndex) {
@@ -173,20 +175,6 @@ export default {
         }
 
         Vue.set(this.lines, this.activeLine, currLine);      
-
-
-        // // find the current bar
-        // var currentBarText = this.barText[this.activeBar];
-
-        // // clicking on an item that is already selected...clear the item
-        // if (currentBarText[stringIndex] === fretIndex.toString()) {
-        //     currentBarText[stringIndex] = '-';
-        // } else {
-        //     // clicked on a new fret set the fret
-        //     currentBarText[stringIndex] = fretIndex.toString(); 
-        // }
-
-        // Vue.set(this.barText, this.activeBar, currentBarText);
       },
       deleteBar: function () {
         // don't delete if there's just one bar
@@ -214,15 +202,10 @@ export default {
             newBar.push('-');
         }
 
-        //this.lines[this.activeLine].push(newBar);
-
         var nextish = this.lines[this.activeLine];
         nextish.push(newBar);
 
         Vue.set(this.lines, this.activeLine, nextish);
-
-
-        //Vue.set(this.barText, this.barText.length, newBar);
       },
       nextBar: function() {
         if (this.activeBar + 1 >= this.lines[this.activeLine].length) {
@@ -296,14 +279,12 @@ export default {
     }
 
     .notation-container {
-        display: table;
         margin-bottom: 1rem;
     }
 
-    /* .notation-groups {
-        height: 15em;
-        overflow: auto;
-    } */
+    .text-notes {
+        width: 100%;
+    }
 
     .notation-string {
         display: table-row;
