@@ -4,10 +4,34 @@
             <div class="tab-container">
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="string-tuning">
-                        {{stringTuning[stringIndex]}}
+                        <div class="btn-group">
+                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                               {{stringTuning[stringIndex]}}
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A', stringIndex);">A</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Ab', stringIndex);">Ab</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A#', stringIndex);">A#</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C', stringIndex);">C</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Cb', stringIndex);">Cb</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C#', stringIndex);">C#</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D', stringIndex);">D</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Db', stringIndex);">Db</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D#', stringIndex);">D#</a>
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E', stringIndex);">E</a> 
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Eb', stringIndex);">Eb</a> 
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E#', stringIndex);">E#</a>          
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F', stringIndex);">F</a>          
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Fb', stringIndex);">Fb</a>          
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F#', stringIndex);">F#</a>  
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G', stringIndex);">G</a> 
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Gb', stringIndex);">Gb</a> 
+                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G#', stringIndex);">G#</a>                            
+                            </div>
+                        </div>
                     </div>
                     <div class="adv-container">
-                    <div class="btn-group">
+                        <div class="btn-group">
                             <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{getSpecialNotationVal(stringIndex)}}
                             </button>
@@ -76,7 +100,7 @@ export default {
   },
   data() {
       return {
-          stringCount: 7,
+          stringCount: 4,
           fretCount: 24,
           stringTuning: [],
           hoverBar: null,
@@ -108,7 +132,10 @@ export default {
 
     this.lineText.push('');
   },
-  methods: {    
+  methods: {
+    setStringTuning(newTuning, stringIndex) {
+        Vue.set(this.stringTuning, stringIndex, newTuning);
+    },   
     createDefaultBar() {
         var barArray = [];
         for (var i = 0; i < this.stringCount; i++) {
@@ -284,7 +311,8 @@ export default {
     }
 
     .notation-container {
-        margin-bottom: 1rem;
+        margin-top: .5em;
+        margin-bottom: 1em;
     }
 
     .text-notes {
