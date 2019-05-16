@@ -101,19 +101,37 @@ import debug from '../components/Debug.vue'
 export default {
   name: 'Tabscribe',
   props: {
-    msg: String
+      stringTuning: {
+        type: Array,
+        required: true,
+        default: () => []
+      },
+      lines: {
+        type: Array,
+        required: true,
+        default: () => []
+      },
+      lineText: {
+        type: Array,
+        required: true,
+        default: () => []
+      },
+      fretCount : {
+        type: Number,
+        required: false,
+        default: 24
+      },
+      defaultBarCount :{
+        type: Number,
+        required: false,
+        default: 10
+      }
   },
   data() {
       return {
-          stringCount: 4,
-          fretCount: 24,
-          stringTuning: [],
           hoverBar: null,
           activeBar: 0,
           activeLine: 0,
-          lines:[],
-          lineText: [],
-          defaultBarCount: 10
       }
   },
   components: {
@@ -138,15 +156,21 @@ export default {
         }
     };
   },
+  computed: {
+      stringCount: function() {
+          return this.stringTuning.length;
+      }
+  },
   created: function () {
-    // Set default strings and tunings
-    if (this.stringCount === 7) {
-    this.stringTuning = ["E", "B", "G", "D", "A", "E", "B"];
-    } else if (this.stringCount == 6) {
-    this.stringTuning = ["E", "B", "G", "D", "A", "E"];
-    } else if (this.stringCount === 4) {
-        this.stringTuning = ["G", "D", "A", "E"];
-    }
+    // user has provided a string tuning value
+
+    // if (this.stringCount === 7) {
+    //     this.stringTuning = ["E", "B", "G", "D", "A", "E", "B"];
+    // } else if (this.stringCount == 6) {
+    //     this.stringTuning = ["E", "B", "G", "D", "A", "E"];
+    // } else if (this.stringCount === 4) {
+    //     this.stringTuning = ["G", "D", "A", "E"];
+    // }
 
     this.lines[0] = [];
 

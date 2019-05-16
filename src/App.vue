@@ -1,16 +1,29 @@
 <template>
   <div id="app">
-    <Tabscribe />
+    <input type="button" value="Click Me" @click="btnClick();"/>
+    <Tabscribe :stringTuning="['G', 'D', 'A', 'E']" :lines="lines" :lineText="lineText" :defaultBarCount="20" />
   </div>
 </template>
 
 <script>
 import Tabscribe from './components/Tabscribe.vue'
-
+/* eslint-disable */
 export default {
   name: 'app',
   components: {
     Tabscribe
+  },
+   data() {
+      return {
+        lines: [],
+        lineText: []
+      }
+  },
+  methods: {
+    btnClick() {
+      console.log(this.lines);
+      console.log(this.lineText);
+    }
   }
 }
 </script>
