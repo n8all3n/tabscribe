@@ -3,8 +3,8 @@
         <div class="tab-control-container sticky-top">
             <div class="tab-container">
                 <div class="fret-number-container">
-                    <div class="fret-number" v-for="(item, x) in fretCount + 2" v-bind:key="x">
-                        <span v-if="x-1 > 0">{{x - 1}}</span>
+                    <div class="fret-number" v-for="(item, x) in fretCount + 3" v-bind:key="x">
+                        <span v-if="x-1 > 0">{{x - 2}}</span>
                     </div>
                 </div>
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="fret" v-bind:class="getFretNoteClass(fretIndex, stringIndex)" v-for="(item,fretIndex) in fretCount" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex + 1, stringIndex);">
+                    <div class="fret" v-bind:class="getFretNoteClass(fretIndex -1, stringIndex)" v-for="(item,fretIndex) in fretCount + 1" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex, stringIndex);">
                     </div>
                 </div>
             </div>
@@ -162,16 +162,6 @@ export default {
       }
   },
   created: function () {
-    // user has provided a string tuning value
-
-    // if (this.stringCount === 7) {
-    //     this.stringTuning = ["E", "B", "G", "D", "A", "E", "B"];
-    // } else if (this.stringCount == 6) {
-    //     this.stringTuning = ["E", "B", "G", "D", "A", "E"];
-    // } else if (this.stringCount === 4) {
-    //     this.stringTuning = ["G", "D", "A", "E"];
-    // }
-
     this.lines[0] = [];
 
     for (var i = 0; i < this.defaultBarCount; i++) {

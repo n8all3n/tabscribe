@@ -1,7 +1,9 @@
 <template>
   <div id="app">
+    <!-- https://tabs.ultimate-guitar.com/tab/nirvana/smells_like_teen_spirit_tabs_202727 -->
     <input type="button" value="Click Me" @click="btnClick();"/>
-    <Tabscribe :stringTuning="['G', 'D', 'A', 'E']" :lines="lines" :lineText="lineText" :defaultBarCount="20" />
+    <input type="button" value="Get Json" @click="getJson();"/>
+    <Tabscribe :stringTuning="['E','B','G', 'D', 'A', 'E']" :lines="lines" :lineText="lineText" :defaultBarCount="20" />
   </div>
 </template>
 
@@ -20,9 +22,18 @@ export default {
       }
   },
   methods: {
+    getJson() {
+      var currFile = require('./songs/Song1.json');
+      this.lines = currFile.lines; //Object.freeze(currFile.lines);
+      this.lineText = currFile.lineText; //Object.freeze(currFile.lineText);
+    },
     btnClick() {
-      console.log(this.lines);
-      console.log(this.lineText);
+      var finalObj ={
+        lines: this.lines,
+        lineText: this.lineText
+      }
+
+      console.log(JSON.stringify(finalObj));
     }
   }
 }
