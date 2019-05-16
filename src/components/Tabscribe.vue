@@ -69,6 +69,20 @@
         </div>
         <div class="notation-groups">
             <div class="notation-container" v-for="(currentLine, lineIndex) in lines.length" v-bind:key="lineIndex">
+                <div class="notation-string" v-for="(string, stringIndex) in stringCount" v-bind:key="stringIndex">
+                    <div class="notation-string-tuning"> 
+                        <span class="notation-text">{{stringTuning[stringIndex]}}|</span>
+                       
+                        <span class="notation-text" v-for="(currItem, itemIndex) in lines[lineIndex][stringIndex].split('')" v-bind:key="itemIndex">
+                            {{currItem}}
+                        </span>
+            
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="notation-groups">
+            <div class="notation-container" v-for="(currentLine, lineIndex) in lines.length" v-bind:key="lineIndex">
                 <div>
                     <input type="text" class="text-notes" v-model="lineText[lineIndex]" placeholder="Text describing the current line...">
                 </div>
@@ -81,15 +95,13 @@
                         v-on:click="setBarActive(lineIndex, barIndex);" 
                         v-on:mouseover="barMouseOver(barIndex);" 
                         v-on:mouseleave="barMouseLeave();">
-
-                        <!-- <debug :item="lines[lineIndex][barIndex][stringIndex]"/> -->
                         <span class="notation-text"
                             v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '']">
                             {{lines[lineIndex][barIndex][stringIndex]}}</span>
                     </div>
                 </div>
             </div> 
-        </div>
+        </div> -->
 
     </div>
 </template>
@@ -164,9 +176,17 @@ export default {
   created: function () {
     this.lines[0] = [];
 
-    for (var i = 0; i < this.defaultBarCount; i++) {
-        this.lines[0].push(this.createDefaultBar());
+    // for (var i = 0; i < this.defaultBarCount; i++) {
+    //     this.lines[0].push(this.createDefaultBar());
+    // }
+
+    for (var i= 0; i < this.stringCount; i++) {
+        var item = [];
+        var defaultBar = this.createDefaultBar();
+        var barText = defaultBar.join('');
+        this.lines[0].push(barText);
     }
+
 
     this.lineText.push('');
   },
