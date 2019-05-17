@@ -54,7 +54,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="fret" v-bind:class="getFretNoteClass(fretIndex -1, stringIndex)" v-for="(item,fretIndex) in fretCount + 1" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex, stringIndex);">
+                    <div class="fret" v-bind:class="getFretNoteClass(fretIndex, stringIndex)" v-for="(item,fretIndex) in fretCount + 1" v-bind:key="fretIndex" v-on:click="fretClick(fretIndex, stringIndex);">
                     </div>
                 </div>
             </div>
@@ -73,9 +73,9 @@
                     <div class="notation-string-tuning"> 
                         <span class="notation-text">{{stringTuning[stringIndex]}}|</span>
                        
-                        <span class="notation-text" v-for="(currItem, itemIndex) in lines[lineIndex][stringIndex].split('')" v-bind:key="itemIndex">
+                        <div v-bind:class="itemIndex === selectedItem && selectedLine === lineIndex ? 'active-bar' : ''" @click="itemClick(itemIndex, lineIndex)" class="notation-text" v-bind="stringAttribute(stringIndex, itemIndex)" v-for="(currItem, itemIndex) in lines[lineIndex][stringIndex].split(',')" v-bind:key="itemIndex">
                             {{currItem}}
-                        </span>
+                        </div>
             
                     </div>
                 </div>
@@ -136,7 +136,7 @@ export default {
       defaultBarCount :{
         type: Number,
         required: false,
-        default: 10
+        default: 150
       }
   },
   data() {
@@ -144,6 +144,9 @@ export default {
           hoverBar: null,
           activeBar: 0,
           activeLine: 0,
+
+          selectedItem: 0,
+          selectedLine: 0
       }
   },
   components: {
@@ -180,17 +183,38 @@ export default {
     //     this.lines[0].push(this.createDefaultBar());
     // }
 
-    for (var i= 0; i < this.stringCount; i++) {
+    for (var i = 0; i < this.stringCount; i++) {
         var item = [];
-        var defaultBar = this.createDefaultBar();
-        var barText = defaultBar.join('');
-        this.lines[0].push(barText);
+        var defaultBar = this.createDefaultBarNEW();    
+        this.lines[0].push(defaultBar);
     }
-
 
     this.lineText.push('');
   },
   methods: {
+    itemClick(itemIndex, lineIndex) {
+        this.selectedItem = itemIndex;
+        this.selectedLine = lineIndex;
+    },
+    stringAttribute(stringIndex, itemIndex) {
+          return {
+            [`data-string-${stringIndex}`]: "",
+            [`data-position-${itemIndex}`]: ""
+        }
+    },
+    createDefaultBarNEW() {
+        var newBar = [];
+        for(var i = 0; i < this.defaultBarCount; i++) {
+            newBar.push('-');
+
+            if (i + 1 !== this.defaultBarCount) {
+                newBar.push(',');
+            }
+            
+        }
+        return newBar.join('');
+    },
+
     setStringTuning(newTuning, stringIndex) {
         Vue.set(this.stringTuning, stringIndex, newTuning);
     },   
@@ -203,15 +227,31 @@ export default {
         return barArray;
     },
     addNewLine: function() {
-        var newBar = this.createDefaultBar();
-        var newArray = [];
-        for (var i = 0; i < this.defaultBarCount; i++) {
-            newArray.push(this.createDefaultBar());
-        }
+        // var newBar = this.createDefaultBar();
+        // var newArray = [];
+        // for (var i = 0; i < this.defaultBarCount; i++) {
+        //     newArray.push(this.createDefaultBar());
+        // }
         
-        var nextIndex = this.lines.length;
+        // var nextIndex = this.lines.length;
 
-        Vue.set(this.lines, nextIndex, newArray);
+        // Vue.set(this.lines, nextIndex, newArray);
+        var newLine = [];
+
+        for (var i = 0; i < this.stringCount; i++) {
+            var item = [];
+            var defaultBar = this.createDefaultBarNEW();    
+            newLine.push(defaultBar);
+        }
+
+
+
+        // var newBar = this.createDefaultBar();
+        // var barText = newBar.join('');
+        var nextIndex = this.lines.length;
+        
+        Vue.set(this.lines, nextIndex, newLine);
+
 
         this.lineText.push('');
     },
@@ -235,13 +275,13 @@ export default {
 
     },
     getSpecialNotationVal(stringIndex) {
-        var currBar = this.lines[this.activeLine][this.activeBar];
-        var theString = currBar[stringIndex];
+        // var currBar = this.lines[this.activeLine][this.activeBar];
+        // var theString = currBar[stringIndex];
 
-        var parsedVal = parseInt(theString, 10);
-        if (isNaN(parsedVal) && theString !== '-') {
-            return theString;
-        }
+        // var parsedVal = parseInt(theString, 10);
+        // if (isNaN(parsedVal) && theString !== '-') {
+        //     return theString;
+        // }
 
         return '';
     },
@@ -251,25 +291,46 @@ export default {
        * return a class that indicates the fret is active
        */
       getFretNoteClass: function(fretIndex, stringIndex) {
-        var currBar =  this.lines[this.activeLine][this.activeBar];
-        var theString = currBar[stringIndex];
 
-        if (parseInt(theString, 10) - 1 === fretIndex) {
-            return 'fret-active';
+        var currLine = this.lines[this.selectedLine];
+        var theString = currLine[stringIndex];
+
+        var strSplit = theString.split(',');
+
+        var item = strSplit[this.selectedItem];
+
+        var parsedItem = parseInt(item, 10);
+
+        if (parsedItem >= 0 && parsedItem === fretIndex) {
+             return 'fret-active';
         }
+
+        // var currBar =  this.lines[this.activeLine][this.activeBar];
+        // var theString = currBar[stringIndex];
+
+        // if (parseInt(theString, 10) - 1 === fretIndex) {
+        //     return 'fret-active';
+        // }
 
         return '';
       },
       fretClick: function(fretIndex, stringIndex) {
-        var currLine = this.lines[this.activeLine];
+        var currLine = this.lines[this.selectedLine];
+        var currString = currLine[stringIndex];
+        
+        var currArray = currString.split(',');
 
-        if (currLine[this.activeBar][stringIndex] === fretIndex) {
-            currLine[this.activeBar][stringIndex] = '-';
+        var currItem = parseInt(currArray[this.selectedItem], 10);
+
+        if (currItem === fretIndex) {
+            currArray[this.selectedItem] = '-';
         } else {
-            currLine[this.activeBar][stringIndex] = fretIndex;
+            currArray[this.selectedItem] = fretIndex;
         }
 
-        Vue.set(this.lines, this.activeLine, currLine);      
+        currLine[stringIndex] = currArray.join(',');
+        
+        Vue.set(this.lines, this.selectedLine, currLine)
       },
       deleteBar: function () {
         // don't delete if there's just one bar
@@ -298,19 +359,19 @@ export default {
         Vue.set(this.lines, this.activeLine, nextish);
       },
       nextBar: function() {
-        if (this.activeBar + 1 >= this.lines[this.activeLine].length) {
+        if (this.selectedItem + 1 >= this.lines[this.selectedLine][0].split(',').length) {
             return;
         }
 
-        this.activeBar +=1;
+        this.selectedItem +=1;
           
       },
       backOneBar: function() {
-        if (this.activeBar === 0) {
+        if (this.selectedItem === 0) {
             return;
         }
 
-        this.activeBar -=1;     
+        this.selectedItem -=1;     
       },
       barMouseOver: function(barIndex) {
         this.hoverBar = barIndex;
@@ -399,6 +460,7 @@ export default {
 
     .notation-text {
         margin: 0 !important;
+        display: inline-block;
     }
 
     .notation-text, .text-notes {

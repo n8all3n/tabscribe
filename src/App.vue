@@ -3,7 +3,7 @@
     <!-- https://tabs.ultimate-guitar.com/tab/nirvana/smells_like_teen_spirit_tabs_202727 -->
     <input type="button" value="Click Me" @click="btnClick();"/>
     <input type="button" value="Get Json" @click="getJson();"/>
-    <Tabscribe :stringTuning="['E','B','G', 'D', 'A', 'E']" :lines="lines" :lineText="lineText" :defaultBarCount="20" />
+    <Tabscribe :stringTuning="['E','B','G', 'D', 'A', 'E']" :lines="lines" :lineText="lineText" />
   </div>
 </template>
 
