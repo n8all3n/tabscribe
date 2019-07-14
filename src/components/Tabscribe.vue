@@ -73,7 +73,7 @@
                     <div class="notation-string-tuning"> 
                         <span class="notation-text">{{stringTuning[stringIndex]}}|</span>
                        
-                        <div v-bind:class="itemIndex === selectedItem && selectedLine === lineIndex ? 'active-bar' : ''" @click="itemClick(itemIndex, lineIndex)" class="notation-text" v-bind="stringAttribute(stringIndex, itemIndex)" v-for="(currItem, itemIndex) in lines[lineIndex][stringIndex].split(',')" v-bind:key="itemIndex">
+                        <div v-bind:class="itemIndex === selectedItem && activeLine === lineIndex ? 'active-bar' : ''" @click="itemClick(itemIndex, lineIndex)" class="notation-text" v-for="(currItem, itemIndex) in lines[lineIndex][stringIndex].split(',')" v-bind:key="itemIndex">
                             {{currItem}}
                         </div>
             
@@ -81,28 +81,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="notation-groups">
-            <div class="notation-container" v-for="(currentLine, lineIndex) in lines.length" v-bind:key="lineIndex">
-                <div>
-                    <input type="text" class="text-notes" v-model="lineText[lineIndex]" placeholder="Text describing the current line...">
-                </div>
-                <div class="notation-string" v-for="(string, stringIndex) in stringCount" v-bind:key="stringIndex">
-                    <div class="notation-string-tuning"> 
-                        <pre class="notation-text">{{stringTuning[stringIndex]}}|</pre>
-                    </div>
-                    <div class="notation-bar" v-bind:class="activeLine === lineIndex && activeBar === barIndex ? 'active-bar' : ''"
-                        v-for="(item,barIndex) in lines[lineIndex].length" :key="barIndex"
-                        v-on:click="setBarActive(lineIndex, barIndex);" 
-                        v-on:mouseover="barMouseOver(barIndex);" 
-                        v-on:mouseleave="barMouseLeave();">
-                        <span class="notation-text"
-                            v-bind:class="[hoverBar === barIndex ? 'hovered-bar' : '']">
-                            {{lines[lineIndex][barIndex][stringIndex]}}</span>
-                    </div>
-                </div>
-            </div> 
-        </div> -->
-
     </div>
 </template>
 
@@ -145,8 +123,7 @@ export default {
           activeBar: 0,
           activeLine: 0,
 
-          selectedItem: 0,
-          selectedLine: 0
+          selectedItem: 0
       }
   },
   components: {
@@ -179,10 +156,6 @@ export default {
   created: function () {
     this.lines[0] = [];
 
-    // for (var i = 0; i < this.defaultBarCount; i++) {
-    //     this.lines[0].push(this.createDefaultBar());
-    // }
-
     for (var i = 0; i < this.stringCount; i++) {
         var item = [];
         var defaultBar = this.createDefaultBarNEW();    
@@ -194,13 +167,8 @@ export default {
   methods: {
     itemClick(itemIndex, lineIndex) {
         this.selectedItem = itemIndex;
-        this.selectedLine = lineIndex;
-    },
-    stringAttribute(stringIndex, itemIndex) {
-          return {
-            [`data-string-${stringIndex}`]: "",
-            [`data-position-${itemIndex}`]: ""
-        }
+        this.activeLine = lineIndex;
+        
     },
     createDefaultBarNEW() {
         var newBar = [];
@@ -227,15 +195,6 @@ export default {
         return barArray;
     },
     addNewLine: function() {
-        // var newBar = this.createDefaultBar();
-        // var newArray = [];
-        // for (var i = 0; i < this.defaultBarCount; i++) {
-        //     newArray.push(this.createDefaultBar());
-        // }
-        
-        // var nextIndex = this.lines.length;
-
-        // Vue.set(this.lines, nextIndex, newArray);
         var newLine = [];
 
         for (var i = 0; i < this.stringCount; i++) {
@@ -244,10 +203,6 @@ export default {
             newLine.push(defaultBar);
         }
 
-
-
-        // var newBar = this.createDefaultBar();
-        // var barText = newBar.join('');
         var nextIndex = this.lines.length;
         
         Vue.set(this.lines, nextIndex, newLine);
@@ -270,20 +225,31 @@ export default {
     },
     setSpecialNotationValue(notation, stringIndex) {
         var currLine = this.lines[this.activeLine];
-        currLine[this.activeBar][stringIndex] = notation;
-        Vue.set(this.lines, this.activeLine, currLine);
+        var currString = currLine[stringIndex];
+        
+        var currArray = currString.split(',');
 
+        var currItem = parseInt(currArray[this.selectedItem], 10);
+
+        currArray[this.selectedItem] = notation;
+
+        currLine[stringIndex] = currArray.join(',');
+        
+        Vue.set(this.lines, this.activeLine, currLine);
     },
     getSpecialNotationVal(stringIndex) {
-        // var currBar = this.lines[this.activeLine][this.activeBar];
-        // var theString = currBar[stringIndex];
+        var currLine = this.lines[this.activeLine];
+        var theString = currLine[stringIndex];
 
-        // var parsedVal = parseInt(theString, 10);
-        // if (isNaN(parsedVal) && theString !== '-') {
-        //     return theString;
-        // }
+        var strSplit = theString.split(',');
 
-        return '';
+        var item = strSplit[this.selectedItem];
+
+        if (isNaN(item)) {
+            return item;
+        }
+
+        return '-';
     },
 
       /**
@@ -292,7 +258,7 @@ export default {
        */
       getFretNoteClass: function(fretIndex, stringIndex) {
 
-        var currLine = this.lines[this.selectedLine];
+        var currLine = this.lines[this.activeLine];
         var theString = currLine[stringIndex];
 
         var strSplit = theString.split(',');
@@ -305,17 +271,10 @@ export default {
              return 'fret-active';
         }
 
-        // var currBar =  this.lines[this.activeLine][this.activeBar];
-        // var theString = currBar[stringIndex];
-
-        // if (parseInt(theString, 10) - 1 === fretIndex) {
-        //     return 'fret-active';
-        // }
-
         return '';
       },
       fretClick: function(fretIndex, stringIndex) {
-        var currLine = this.lines[this.selectedLine];
+        var currLine = this.lines[this.activeLine];
         var currString = currLine[stringIndex];
         
         var currArray = currString.split(',');
@@ -330,36 +289,10 @@ export default {
 
         currLine[stringIndex] = currArray.join(',');
         
-        Vue.set(this.lines, this.selectedLine, currLine)
-      },
-      deleteBar: function () {
-        // don't delete if there's just one bar
-        if (this.lines[this.activeLine].length === 1) {
-            return;
-        }
-          
-        // get whatever the next bar would be after this one is deleted
-        var nextActiveBar;
-        if (this.activeBar === 0) {
-            nextActiveBar = 0;
-        } else {
-            nextActiveBar = this.activeBar - 1;
-        }
-        
-        this.$delete(this.lines[this.activeLine], this.activeBar);
-        
-        // update the active bar now that a bar is deleted
-        this.activeBar = nextActiveBar;
-      },
-      addNewBar: function() {
-        var newBar = this.createDefaultBar();
-        var nextish = this.lines[this.activeLine];
-        nextish.push(newBar);
-
-        Vue.set(this.lines, this.activeLine, nextish);
+        Vue.set(this.lines, this.activeLine, currLine);
       },
       nextBar: function() {
-        if (this.selectedItem + 1 >= this.lines[this.selectedLine][0].split(',').length) {
+        if (this.selectedItem + 1 >= this.lines[this.activeLine][0].split(',').length) {
             return;
         }
 
