@@ -9,31 +9,7 @@
                 </div>
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="string-tuning">
-                        <div class="btn-group">
-                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                               {{stringTuning[stringIndex]}}
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A', stringIndex);">A</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Ab', stringIndex);">Ab</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A#', stringIndex);">A#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C', stringIndex);">C</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Cb', stringIndex);">Cb</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C#', stringIndex);">C#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D', stringIndex);">D</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Db', stringIndex);">Db</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D#', stringIndex);">D#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E', stringIndex);">E</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Eb', stringIndex);">Eb</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E#', stringIndex);">E#</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F', stringIndex);">F</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Fb', stringIndex);">Fb</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F#', stringIndex);">F#</a>  
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G', stringIndex);">G</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Gb', stringIndex);">Gb</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G#', stringIndex);">G#</a>                            
-                            </div>
-                        </div>
+                         {{stringTuning[stringIndex]}}
                     </div>
                     <div class="adv-container">
                         <div class="btn-group">
@@ -64,7 +40,6 @@
                 <button type="button" class="btn btn-primary" v-on:click="addNewBar();">Add Bar</button>
                 <button type="button" class="btn btn-primary" v-on:click="backOneBar();">Back a Bar</button>
                 <button type="button" class="btn btn-primary" v-on:click="nextBar();">Next Bar</button>
-                <button type="button" class="btn btn-primary" v-on:click="deleteBar();">Delete Bar</button>
             </div>
         </div>
         <div class="notation-groups">
@@ -87,7 +62,6 @@
 <script>
 /* eslint-disable */
 import Vue from 'vue'
-import debug from '../components/Debug.vue'
 export default {
   name: 'Tabscribe',
   props: {
@@ -119,15 +93,10 @@ export default {
   },
   data() {
       return {
-          hoverBar: null,
           activeBar: 0,
           activeLine: 0,
-
           selectedItem: 0
       }
-  },
-  components: {
-    debug
   },
   mounted: function () {
       var vm = this;
@@ -136,14 +105,8 @@ export default {
            case 37: // Left arrow
                 vm.backOneBar();
               break;
-           case 38: // Up arrow
-                //vm.setBarActive(vm.lineIndex +=1, 0);
-              break;
            case 39: // Right arrow
                 vm.nextBar();
-              break;
-           case 40: // Down Arrow
-                 //vm.setBarActive(vm.lineIndex +=1, 0);
               break;
         }
     };
@@ -158,7 +121,7 @@ export default {
 
     for (var i = 0; i < this.stringCount; i++) {
         var item = [];
-        var defaultBar = this.createDefaultBarNEW();    
+        var defaultBar = this.createDefaultBar();    
         this.lines[0].push(defaultBar);
     }
 
@@ -170,7 +133,7 @@ export default {
         this.activeLine = lineIndex;
         
     },
-    createDefaultBarNEW() {
+    createDefaultBar() {
         var newBar = [];
         for(var i = 0; i < this.defaultBarCount; i++) {
             newBar.push('-');
@@ -186,20 +149,12 @@ export default {
     setStringTuning(newTuning, stringIndex) {
         Vue.set(this.stringTuning, stringIndex, newTuning);
     },   
-    createDefaultBar() {
-        var barArray = [];
-        for (var i = 0; i < this.stringCount; i++) {
-            barArray.push('-');
-        }
-
-        return barArray;
-    },
     addNewLine: function() {
         var newLine = [];
 
         for (var i = 0; i < this.stringCount; i++) {
             var item = [];
-            var defaultBar = this.createDefaultBarNEW();    
+            var defaultBar = this.createDefaultBar();    
             newLine.push(defaultBar);
         }
 
@@ -306,12 +261,6 @@ export default {
 
         this.selectedItem -=1;     
       },
-      barMouseOver: function(barIndex) {
-        this.hoverBar = barIndex;
-      },
-      barMouseLeave: function() {
-        this.hoverBar = null;
-      },
       setBarActive: function(lineIndex, barIndex) {
         this.activeBar = barIndex;
         this.activeLine = lineIndex;
@@ -320,7 +269,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
     .control-buttons {
         padding-top: 1em;
