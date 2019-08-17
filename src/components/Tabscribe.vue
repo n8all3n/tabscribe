@@ -9,31 +9,7 @@
                 </div>
                 <div class="string" v-for="(item, stringIndex) in stringCount" v-bind:key="stringIndex">
                     <div class="string-tuning">
-                        <div class="btn-group">
-                            <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                               {{stringTuning[stringIndex]}}
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A', stringIndex);">A</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Ab', stringIndex);">Ab</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('A#', stringIndex);">A#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C', stringIndex);">C</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Cb', stringIndex);">Cb</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('C#', stringIndex);">C#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D', stringIndex);">D</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Db', stringIndex);">Db</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('D#', stringIndex);">D#</a>
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E', stringIndex);">E</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Eb', stringIndex);">Eb</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('E#', stringIndex);">E#</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F', stringIndex);">F</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Fb', stringIndex);">Fb</a>          
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('F#', stringIndex);">F#</a>  
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G', stringIndex);">G</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('Gb', stringIndex);">Gb</a> 
-                                <a class="dropdown-item" href="javascript:void(0);" @click="setStringTuning('G#', stringIndex);">G#</a>                            
-                            </div>
-                        </div>
+                        {{stringTuning[stringIndex]}}
                     </div>
                     <div class="adv-container">
                         <div class="btn-group">
@@ -97,7 +73,6 @@
 <script>
 /* eslint-disable */
 import Vue from 'vue'
-import debug from '../components/Debug.vue'
 export default {
   name: 'Tabscribe',
   props: {
@@ -134,9 +109,6 @@ export default {
           activeLine: 0,
       }
   },
-  components: {
-    debug
-  },
   mounted: function () {
       var vm = this;
       document.onkeydown = function(event) {
@@ -144,14 +116,8 @@ export default {
            case 37: // Left arrow
                 vm.backOneBar();
               break;
-           case 38: // Up arrow
-                //vm.setBarActive(vm.lineIndex +=1, 0);
-              break;
            case 39: // Right arrow
                 vm.nextBar();
-              break;
-           case 40: // Down Arrow
-                 //vm.setBarActive(vm.lineIndex +=1, 0);
               break;
         }
     };
