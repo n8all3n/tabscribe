@@ -251,7 +251,7 @@ export default {
       defaultBarCount :{
         type: Number,
         required: false,
-        default: 10
+        default: 43
       }
   },
   data() {
@@ -266,46 +266,11 @@ export default {
       document.onkeydown = function(event) {
         switch (event.keyCode) {
            case 37: // Left arrow
-                var initX = $('#rect4672').attr('x');
-                initX = parseFloat(initX) - 4;
-                if (initX >= 5.5) {
-                    $('#rect4672').attr('x', initX);
-                }
-              break;
+                vm.moveActiveBarMarkerLeft();
+                break;
            case 39: // Right arrow
-                var initX = $('#rect4672').attr('x');
-                initX = parseFloat(initX) + 4;
-
-                if (initX <= 177.5) {
-                    $('#rect4672').attr('x', initX);
-                }
-
-                //Place 2 digit element .3 more than tracker
-                //Place 1 digit element 1 more than tracker
-
-
-                //Y values for strings
-                //2
-                //4
-                //6
-                //8.5
-                //10.5
-                //12.5
-
-
-                var svg = document.getElementById('svg348');
-                var element = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                element.setAttributeNS(null,'data-fret-1-string-1', '');
-                element.setAttributeNS(null, 'x', 5.8);
-                element.setAttributeNS(null, 'y', 12.5);
-                element.setAttributeNS(null, 'font-weight', 'bold');
-                element.setAttributeNS(null, 'font-size', 1.7);
-                element.setAttributeNS(null, 'style', "font-weight:bold;font-size:2.51501966px;font-family:'Century Schoolbook L';text-anchor:start;fill:currentColor;stroke-width:1.44036412");
-                var txt = document.createTextNode("2");
-                element.appendChild(txt);
-                svg.appendChild(element);
-
-              break;
+                vm.moveActiveBarMarkerRight();
+                break;
         }
     };
   },
@@ -324,6 +289,23 @@ export default {
     this.lineText.push('');
   },
   methods: {
+    moveActiveBarMarkerRight() {
+        var initX = $('#rect4672').attr('x');
+        initX = parseFloat(initX) + 4;
+
+        if (initX <= 177.5) {
+            $('#rect4672').attr('x', initX);
+            this.activeBar += 1;
+        }
+    },
+    moveActiveBarMarkerLeft() {
+        var initX = $('#rect4672').attr('x');
+        initX = parseFloat(initX) - 4;
+        if (initX >= 5.5) {
+            $('#rect4672').attr('x', initX);
+             this.activeBar -= 1;
+        }
+    },
     setStringTuning(newTuning, stringIndex) {
         Vue.set(this.stringTuning, stringIndex, newTuning);
     },   
@@ -396,14 +378,69 @@ export default {
       fretClick: function(fretIndex, stringIndex) {
         var currLine = this.lines[this.activeLine];
 
+        var existingFret = currLine[this.activeBar][stringIndex];
+
+        this.removeFretText(existingFret, stringIndex);
+
         if (currLine[this.activeBar][stringIndex] === fretIndex) {
             currLine[this.activeBar][stringIndex] = '-';
         } else {
+            this.createFretText(fretIndex, stringIndex, existingFret);
             currLine[this.activeBar][stringIndex] = fretIndex;
         }
 
-        Vue.set(this.lines, this.activeLine, currLine);      
+        Vue.set(this.lines, this.activeLine, currLine);
       },
+
+      removeFretText(fret, string) {
+          var textSvgAttr = 'data-fret-' + fret + '-string-' + string;
+          $('[' + textSvgAttr + ']').remove();
+      },
+
+        createFretText(fretIndex, stringIndex, existingFret) {
+            //Place 2 digit element .3 more than tracker
+            //Place 1 digit element 1 more than tracker
+
+            //Y values for strings
+            //2
+            //4
+            //6
+            //8.5
+            //10.5
+            //12.5
+
+            //this.removeFretText(existingFret, stringIndex);
+
+            // var textSvgAttr = 'data-fret-' + existingFret + '-string-' + stringIndex;
+
+            // $('[' + textSvgAttr + ']').remove();
+
+            var yStringVals = [2, 4, 6, 8.5, 10.5, 12.5];
+
+            var yVal = yStringVals[stringIndex];
+            var xVal = null;
+
+            var trackerX = parseFloat($('#rect4672').attr('x'));
+            
+            if (String(fretIndex).length === 1) {
+                xVal = trackerX + 1;
+            } else if(String(fretIndex).length >= 2) {
+                 xVal = trackerX + .3;
+            }
+
+            var svg = document.getElementById('svg348');
+            var element = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            element.setAttributeNS(null,'data-fret-' + fretIndex + '-string-' + stringIndex, '');
+            element.setAttributeNS(null, 'x', xVal);
+            element.setAttributeNS(null, 'y', yVal);
+            element.setAttributeNS(null, 'font-weight', 'bold');
+            element.setAttributeNS(null, 'font-size', 1.7);
+            element.setAttributeNS(null, 'style', "font-weight:bold;font-size:2.51501966px;font-family:'Century Schoolbook L';text-anchor:start;fill:currentColor;stroke-width:1.44036412");
+            var txt = document.createTextNode(fretIndex);
+            element.appendChild(txt);
+            svg.appendChild(element);
+        },
+
       deleteBar: function () {
         // don't delete if there's just one bar
         if (this.lines[this.activeLine].length === 1) {
